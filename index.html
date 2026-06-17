@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduStream | Student Management System</title>
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --text: #0f172a;
+        --text-light: #64748b;
+        --border: #e2e8f0;
+        --success: #10b981;
+        --danger: #ef4444;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        background-color: var(--background);
+        color: var(--text);
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      header h1 {
+        color: var(--primary);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      /* Stats Dashboard */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border);
+        text-align: center;
+      }
+
+      .stat-card h3 {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-card p {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      /* Main Layout */
+      .main-layout {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+      }
+
+      @media (max-width: 900px) {
+        .main-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Card Styling */
+      .card {
+        background: var(--surface);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border);
+        height: fit-content;
+      }
+
+      .card h2 {
+        margin-bottom: 1.5rem;
+        font-size: 1.4rem;
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 0.5rem;
+      }
+
+      /* Form Controls */
+      .form-group {
+        margin-bottom: 1.25rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      button {
+        cursor: pointer;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: white;
+        width: 100%;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+      }
+
+      /* Controls Section */
+      .list-controls {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .search-bar {
+        flex: 2;
+      }
+
+      .filter-dropdown {
+        flex: 1;
+      }
+
+      /* Table Styling */
+      .table-container {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background-color: #f1f5f9;
+        color: var(--text-light);
+        font-weight: 600;
+      }
+
+      tr:hover {
+        background-color: #f8fafc;
+      }
+
+      .badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .badge-active {
+        background: #dcfce7;
+        color: #15803d;
+      }
+      .badge-pending {
+        background: #fef9c3;
+        color: #a16207;
+      }
+
+      .btn-danger {
+        background-color: transparent;
+        color: var(--danger);
+        padding: 0.4rem 0.8rem;
+        border: 1px solid var(--danger);
+      }
+
+      .btn-danger:hover {
+        background-color: var(--danger);
+        color: white;
+      }
+
+      .no-data {
+        text-align: center;
+        color: var(--text-light);
+        padding: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>EduStream Systems</h1>
+        <p>Real-time Hub for Managing Student Registrations</p>
+      </header>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Students</h3>
+          <p id="total-students">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Active Status</h3>
+          <p id="active-students" style="color: var(--success)">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Pending Fees</h3>
+          <p id="pending-students" style="color: #b45309">0</p>
+        </div>
+      </div>
+
+      <div class="main-layout">
+        <div class="card">
+          <h2>Student Registration</h2>
+          <form id="registration-form">
+            <div class="form-group">
+              <label for="student-name">Full Name</label>
+              <input
+                type="text"
+                id="student-name"
+                class="form-control"
+                placeholder="John Doe"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="student-email">Email Address</label>
+              <input
+                type="email"
+                id="student-email"
+                class="form-control"
+                placeholder="john@school.com"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="student-course">Enrolling Course</label>
+              <select id="student-course" class="form-control" required>
+                <option value="">Select a Course</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Web Development">Web Development</option>
+                <option value="Cyber Security">Cyber Security</option>
+                <option value="Cyber Security">Cyber Security</option>
+                <option value="preparing AI">Preparing AI</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="payment-status">Payment Status</label>
+              <select id="payment-status" class="form-control" required>
+                <option value="Active">Fully Paid (Active)</option>
+                <option value="Pending">Pending Balance</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-primary">Register Student</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>Enrolled Students Directory</h2>
+
+          <div class="list-controls">
+            <input
+              type="text"
+              id="search-input"
+              class="form-control search-bar"
+              placeholder="Search by name, email, or course..."
+            />
+            <select id="filter-status" class="form-control filter-dropdown">
+              <option value="All">All Statuses</option>
+              <option value="Active">Active</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Student Info</th>
+                  <th>Course Target</th>
+                  <th>Status</th>
+                  <th>Management</th>
+                </tr>
+              </thead>
+              <tbody id="student-table-body"></tbody>
+            </table>
+            <div id="empty-state" class="no-data" style="display: none">
+              No student files match the criteria.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // State management utilizing Browser LocalStorage
+      let students = JSON.parse(localStorage.getItem("students")) || [];
+
+      // Primary DOM Selectors
+      const entryForm = document.getElementById("registration-form");
+      const tableBody = document.getElementById("student-table-body");
+      const searchField = document.getElementById("search-input");
+      const filterField = document.getElementById("filter-status");
+      const emptyStateElement = document.getElementById("empty-state");
+
+      // Dashboard Selectors
+      const totalCountMetric = document.getElementById("total-students");
+      const activeCountMetric = document.getElementById("active-students");
+      const pendingCountMetric = document.getElementById("pending-students");
+
+      // Event Framework Trigger Bindings
+      entryForm.addEventListener("submit", createNewStudent);
+      searchField.addEventListener("input", renderRoster);
+      filterField.addEventListener("change", renderRoster);
+
+      // Initial load process execution
+      document.addEventListener("DOMContentLoaded", renderRoster);
+
+      function createNewStudent(e) {
+        e.preventDefault();
+
+        // Object instance formulation
+        const currentStudent = {
+          id: "STU-" + Math.floor(1000 + Math.random() * 9000),
+          name: document.getElementById("student-name").value.trim(),
+          email: document.getElementById("student-email").value.trim(),
+          course: document.getElementById("student-course").value,
+          status: document.getElementById("payment-status").value,
+        };
+
+        students.push(currentStudent);
+        commitStateToStorage();
+        entryForm.reset();
+        renderRoster();
+      }
+
+      function removeStudent(targetId) {
+        students = students.filter((student) => student.id !== targetId);
+        commitStateToStorage();
+        renderRoster();
+      }
+
+      function commitStateToStorage() {
+        localStorage.setItem("students", JSON.stringify(students));
+      }
+
+      function calculateMetrics() {
+        totalCountMetric.textContent = students.length;
+        activeCountMetric.textContent = students.filter(
+          (s) => s.status === "Active",
+        ).length;
+        pendingCountMetric.textContent = students.filter(
+          (s) => s.status === "Pending",
+        ).length;
+      }
+
+      function renderRoster() {
+        const queryTerm = searchField.value.toLowerCase();
+        const selectedFilter = filterField.value;
+
+        // Apply filtering logic across target criteria
+        const filteredDataset = students.filter((student) => {
+          const matchesSearch =
+            student.name.toLowerCase().includes(queryTerm) ||
+            student.email.toLowerCase().includes(queryTerm) ||
+            student.course.toLowerCase().includes(queryTerm);
+
+          const matchesFilter =
+            selectedFilter === "All" || student.status === selectedFilter;
+
+          return matchesSearch && matchesFilter;
+        });
+
+        // Toggle visibility conditions if table array is empty
+        if (filteredDataset.length === 0) {
+          tableBody.innerHTML = "";
+          emptyStateElement.style.display = "block";
+        } else {
+          emptyStateElement.style.display = "none";
+          tableBody.innerHTML = filteredDataset
+            .map(
+              (student) => `
+                <tr>
+                    <td><strong>${student.id}</strong></td>
+                    <td>
+                        <div style="font-weight: 600;">${student.name}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-light);">${student.email}</div>
+                    </td>
+                    <td>${student.course}</td>
+                    <td>
+                        <span class="badge ${student.status === "Active" ? "badge-active" : "badge-pending"}">
+                            ${student.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn-danger" onclick="removeStudent('${student.id}')">Delete</button>
+                    </td>
+                </tr>
+            `,
+            )
+            .join("");
+        }
+
+        calculateMetrics();
+      }
+    </script>
+  </body>
+</html>
