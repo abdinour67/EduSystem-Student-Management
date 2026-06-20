@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Fourth Day - Modern Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #e0eafc, #cfdef3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .all {
+        width: 100%;
+        max-width: 420px;
+        padding: 20px;
+      }
+
+      form {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        animation: fadeIn 0.6s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      label {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 5px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 5px rgba(74, 144, 226, 0.4);
+      }
+
+      input[type="submit"] {
+        background: #4a90e2;
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 10px;
+        margin-top: 15px;
+        transition: 0.3s;
+      }
+
+      input[type="submit"]:hover {
+        background: #357abd;
+        transform: scale(1.03);
+      }
+
+      @media (max-width: 500px) {
+        form {
+          width: 90%;
+          margin: auto;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="all">
+      <form>
+        <label>Username</label>
+        <input type="text" />
+        <label>Password</label>
+        <input type="password" />
+        <p>Show Password</p>
+        <label>Full Name:</label>
+        <input type="text" />
+        <label>Tel:</label>
+        <input type="number" />
+
+        <label>Address:</label>
+        <input type="text" />
+
+        <label>Age:</label>
+        <input type="number" />
+
+        <label>Email:</label>
+        <input type="email" />
+
+        <label>School:</label>
+        <input type="text" />
+
+        <label>Date of Birth:</label>
+        <input type="date" />
+
+        <label>Faculty:</label>
+        <select>
+          <option disabled selected>Choose One</option>
+          <option>Medicine</option>
+          <option>Engineering</option>
+          <option>Law</option>
+          <option>Computer Science</option>
+        </select>
+
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+  </body>
+</html>
+<script>
+  document.querySelector("p").addEventListener("click", function () {
+    var Myinput = document.querySelector("input");
+    if (Myinput.type == "password") {
+      Myinput.type = "text";
+    } else {
+      Myinput.type = "password";
+    }
+    // window.alert(2);
+  });
+</script>
