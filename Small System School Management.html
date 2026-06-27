@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduCore | Enterprise School Management System</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --secondary: #0ea5e9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #f1f5f9;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Nav Layout */
+        aside {
+            width: 260px;
+            background-color: #0f172a;
+            color: white;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .brand h2 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-item button {
+            width: 100%;
+            background: transparent;
+            color: #94a3b8;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: var(--radius-md);
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item button:hover, .nav-item.active button {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Main Screen Container */
+        main {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2.5rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            background: var(--surface);
+            padding: 1.5rem 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+        }
+
+        .date-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .kpi-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+        }
+
+        .kpi-card:nth-child(2) { border-left-color: var(--secondary); }
+        .kpi-card:nth-child(3) { border-left-color: var(--success); }
+        .kpi-card:nth-child(4) { border-left-color: var(--warning); }
+
+        .kpi-card h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* System Views System */
+        .view-panel {
+            display: none;
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .view-panel.active {
+            display: block;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Functional Split Grid layouts */
+        .panel-split {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .panel-split { grid-template-columns: 1fr; }
+        }
+
+        /* Forms Elements */
+        .form-container {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: 2px solid var(--primary);
+        }
+
+        /* Action Buttons */
+        .btn {
+            padding: 0.65rem 1.25rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover { opacity: 0.9; }
+        .btn-submit { background: var(--primary); color: white; width: 100%; }
+        .btn-danger { background: var(--danger); color: white; padding: 0.35rem 0.75rem; font-size: 0.85rem; }
+
+        /* Directory Data Controls */
+        .search-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Table Rendering */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        tr:hover { background-color: #fdfdfd; }
+
+        /* Status Pills Badges */
+        .status-pill {
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .pill-paid { background: #dcfce7; color: #166534; }
+        .pill-unpaid { background: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+
+    <!-- App Sidebar Navigation -->
+    <aside>
+        <div class="brand">
+            <h2>EduCore ERP</h2>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item active" data-target="dashboard-view"><button>Dashboard Hub</button></li>
+            <li class="nav-item" data-target="student-view"><button>Student Records</button></li>
+            <li class="nav-item" data-target="teacher-view"><button>Faculty Registry</button></li>
+            <li class="nav-item" data-target="finance-view"><button>Tuition Ledger</button></li>
+        </ul>
+    </aside>
+
+    <!-- Main Dynamic Screen Engine -->
+    <main>
+        <header>
+            <div>
+                <h1 id="view-title">System Overview Dashboard</h1>
+                <p style="color: var(--text-muted)">Academic Management Framework</p>
+            </div>
+            <div class="date-badge" id="live-clock">Academic Term: 2026</div>
+        </header>
+
+        <!-- KPI Numerical Panels Block -->
+        <div class="kpi-grid">
+            <div class="kpi-card"><h3>Enrolled Census</h3><div class="value" id="kpi-students">0</div></div>
+            <div class="Active Faculty kpi-card"><h3>Active Faculty</h3><div class="value" id="kpi-teachers">0</div></div>
+            <div class="kpi-card"><h3>Collected Fees</h3><div class="value" id="kpi-revenue">$0.00</div></div>
+            <div class="kpi-card"><h3>Outstanding Arrears</h3><div class="value" id="kpi-arrears">$0.00</div></div>
+        </div>
+
+        <!-- MODULE 1: Dashboard Analytics Landings -->
+        <div id="dashboard-view" class="view-panel active">
+            <div class="panel-header"><h2>Welcome to School Operations Controls</h2></div>
+            <p style="margin-bottom: 1.5rem;">Select an options layout from the left navigation bar panel to run live data entry, view directories, update administrative records, or process finance ledger books instantly.</p>
+            
+            <div style="background: #eff6ff; border: 1px dashed var(--secondary); padding: 1.5rem; border-radius: var(--radius-md)">
+                <h4 style="color: var(--secondary); margin-bottom: .5rem">System Data Persistence Notice</h4>
+                <p style="font-size: .9rem; color: var(--text-muted)">This web framework leverages browser-native local storage arrays. Data records survive page refreshes, simulated session interruptions, and browser closes local to your specific environment layout.</p>
+            </div>
+        </div>
+
+        <!-- MODULE 2: Student Registry System -->
+        <div id="student-view" class="view-panel">
+            <div class="panel-header"><h2>Student Information Systems</h2></div>
+            <div class="panel-split">
+                <div class="form-container">
+                    <h3 style="margin-bottom: 1rem;">Admissions Entry Form</h3>
+                    <form id="student-form">
+                        <div class="form-group"><label>Full Legal Name</label><input type="text" id="stu-name" class="form-control" placeholder="Alice Vance" required></div>
+                        <div class="form-group"><label>Email Profile</label><input type="email" id="stu-email" class="form-control" placeholder="alice@edu.org" required></div>
+                        <div class="form-group"><label>Assigned Academic Grade</label>
+                            <select id="stu-grade" class="form-control" required>
+                                <option value="Grade 9">Grade 9</option><option value="Grade 10">Grade 10</option>
+                                <option value="Grade 11">Grade 11</option><option value="Grade 12">Grade 12</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-submit">Save Admissions Record</button>
+                    </form>
+                </div>
+                <div>
+                    <div class="search-row">
+                        <input type="text" id="stu-search" class="form-control" placeholder="Search roster array by name/grade...">
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>ID</th><th>Student Info</th><th>Grade</th><th>Actions</th></tr></thead>
+                            <tbody id="student-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 3: Teacher Registry System -->
+        <div id="teacher-view" class="view-panel">
+            <div class="panel-header"><h2>Faculty Registry Ledger</h2></div>
+            <div class="panel-split">
+                <div class="form-container">
+                    <h3 style="margin-bottom: 1rem;">Onboard Faculty</h3>
+                    <form id="teacher-form">
+                        <div class="form-group"><label>Instructor Name</label><input type="text" id="teach-name" class="form-control" placeholder="Dr. Robert Lang" required></div>
+                        <div class="form-group"><label>Department Track</label>
+                            <select id="teach-dept" class="form-control" required>
+                                <option value="Mathematics">Mathematics</option><option value="Sciences">Sciences</option>
+                                <option value="Humanities">Humanities</option><option value="Technology">Technology</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Contact Line</label><input type="text" id="teach-phone" class="form-control" placeholder="555-0199" required></div>
+                        <button type="submit" class="btn btn-submit">Onboard Faculty Member</button>
+                    </form>
+                </div>
+                <div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Employee ID</th><th>Instructor</th><th>Department</th><th>Phone Contact</th><th>Action</th></tr></thead>
+                            <tbody id="teacher-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 4: Tuition Management System -->
+        <div id="finance-view" class="view-panel">
+            <div class="panel-header"><h2>Tuition & Fee Operations Ledger</h2></div>
+            <div class="panel-split">
+                <div class="form-container">
+                    <h3 style="margin-bottom: 1rem;">Record Invoice/Payment</h3>
+                    <form id="finance-form">
+                        <div class="form-group"><label>Select Student Target</label><select id="fin-student-id" class="form-control" required></select></div>
+                        <div class="form-group"><label>Total Base Fee Charged ($)</label><input type="number" id="fin-amount" class="form-control" min="0" placeholder="3500" required></div>
+                        <div class="form-group"><label>Amount Settled ($)</label><input type="number" id="fin-paid" class="form-control" min="0" placeholder="1500" required></div>
+                        <button type="submit" class="btn btn-submit">Post Financial Entry</button>
+                    </form>
+                </div>
+                <div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Invoice ID</th><th>Student Reference</th><th>Assigned Due</th><th>Settled</th><th>Balance Arrears</th><th>Status</th></tr></thead>
+                            <tbody id="finance-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- State & Framework Management Logic Engines -->
+    <script>
+        // Database State Core
+        let db = {
+            students: JSON.parse(localStorage.getItem('edu_students')) || [],
+            teachers: JSON.parse(localStorage.getItem('edu_teachers')) || [],
+            finance: JSON.parse(localStorage.getItem('edu_finance')) || []
+        };
+
+        // UI View Route Switching Controllers
+        document.querySelectorAll('.nav-links .nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-links .nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+                
+                item.classList.add('active');
+                const viewId = item.getAttribute('data-target');
+                document.getElementById(viewId).classList.add('active');
+                
+                // Update header string contextual label text
+                document.getElementById('view-title').textContent = item.firstChild.textContent;
+                
+                if(viewId === 'finance-view') populateFinanceDropdownOptions();
+            });
+        });
+
+        // Global State persistence operations
+        function sync() {
+            localStorage.setItem('edu_students', JSON.stringify(db.students));
+            localStorage.setItem('edu_teachers', JSON.stringify(db.teachers));
+            localStorage.setItem('edu_finance', JSON.stringify(db.finance));
+            updateKPIs();
+        }
+
+        function updateKPIs() {
+            document.getElementById('kpi-students').textContent = db.students.length;
+            document.getElementById('kpi-teachers').textContent = db.teachers.length;
+            
+            let revenue = db.finance.reduce((acc, curr) => acc + parseFloat(curr.paid || 0), 0);
+            let totalBilled = db.finance.reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
+            let arrears = totalBilled - revenue;
+
+            document.getElementById('kpi-revenue').textContent = `$${revenue.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('kpi-arrears').textContent = `$${arrears.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        }
+
+        // Sub-Module Functional Processing logic
+        // --- 1. Students Operations Layer ---
+        document.getElementById('student-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            db.students.push({
+                id: 'STU' + Math.floor(100000 + Math.random() * 900000),
+                name: document.getElementById('stu-name').value.trim(),
+                email: document.getElementById('stu-email').value.trim(),
+                grade: document.getElementById('stu-grade').value
+            });
+            e.target.reset(); sync(); renderStudents();
+        });
+
+        function deleteStudent(id) {
+            db.students = db.students.filter(s => s.id !== id);
+            db.finance = db.finance.filter(f => f.studentId !== id); // Cascade remove invoicing links
+            sync(); renderStudents(); renderFinance();
+        }
+
+        function renderStudents() {
+            const query = document.getElementById('stu-search').value.toLowerCase();
+            const filtered = db.students.filter(s => s.name.toLowerCase().includes(query) || s.grade.toLowerCase().includes(query));
+            
+            const tbody = document.getElementById('student-table');
+            tbody.innerHTML = filtered.map(s => `
+                <tr>
+                    <td><strong>${s.id}</strong></td>
+                    <td><div style="font-weight:600">${s.name}</div><div style="font-size:0.8rem;color:var(--text-muted)">${s.email}</div></td>
+                    <td>${s.grade}</td>
+                    <td><button class="btn btn-danger" onclick="deleteStudent('${s.id}')">Drop</button></td>
+                </tr>
+            `).join('');
+        }
+        document.getElementById('stu-search').addEventListener('input', renderStudents);
+
+        // --- 2. Instructors Operations Layer ---
+        document.getElementById('teacher-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            db.teachers.push({
+                id: 'FAC' + Math.floor(1000 + Math.random() * 9000),
+                name: document.getElementById('teach-name').value.trim(),
+                dept: document.getElementById('teach-dept').value,
+                phone: document.getElementById('teach-phone').value.trim()
+            });
+            e.target.reset(); sync(); renderTeachers();
+        });
+
+        function deleteTeacher(id) {
+            db.teachers = db.teachers.filter(t => t.id !== id);
+            sync(); renderTeachers();
+        }
+
+        function renderTeachers() {
+            document.getElementById('teacher-table').innerHTML = db.teachers.map(t => `
+                <tr>
+                    <td><strong>${t.id}</strong></td>
+                    <td>${t.name}</td>
+                    <td>${t.dept}</td>
+                    <td>${t.phone}</td>
+                    <td><button class="btn btn-danger" onclick="deleteTeacher('${t.id}')">Retire</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // --- 3. Accounting & Tuition Ledger Layer ---
+        function populateFinanceDropdownOptions() {
+            const dropdown = document.getElementById('fin-student-id');
+            if (db.students.length === 0) {
+                dropdown.innerHTML = '<option value="">No Active Registered Students Found</option>';
+                return;
+            }
+            dropdown.innerHTML = db.students.map(s => `<option value="${s.id}">${s.name} (${s.id})</option>`).join('');
+        }
+
+        document.getElementById('finance-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const total = parseFloat(document.getElementById('fin-amount').value);
+            const paid = parseFloat(document.getElementById('fin-paid').value);
+            
+            db.finance.push({
+                invoiceId: 'INV' + Math.floor(50000 + Math.random() * 49000),
+                studentId: document.getElementById('fin-student-id').value,
+                amount: total,
+                paid: paid
+            });
+            e.target.reset(); sync(); renderFinance();
+        });
+
+        function renderFinance() {
+            document.getElementById('finance-table').innerHTML = db.finance.map(f => {
+                const targetStudent = db.students.find(s => s.id === f.studentId);
+                const nameDisplay = targetStudent ? targetStudent.name : 'Unknown Record';
+                const balance = f.amount - f.paid;
+                const statusLabel = balance <= 0 ? 'Settled' : 'Owed';
+                const statusClass = balance <= 0 ? 'pill-paid' : 'pill-unpaid';
+
+                return `
+                    <tr>
+                        <td><strong>${f.invoiceId}</strong></td>
+                        <td>${nameDisplay}</td>
+                        <td>$${f.amount.toFixed(2)}</td>
+                        <td>$${f.paid.toFixed(2)}</td>
+                        <td style="font-weight:600; color:${balance > 0 ? 'var(--danger)' : 'var(--success)'}">$${balance.toFixed(2)}</td>
+                        <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Program Bootstrap Execution sequence initialization
+        updateKPIs();
+        renderStudents();
+        renderTeachers();
+        renderFinance();
+    </script>
+</body>
+</html>
